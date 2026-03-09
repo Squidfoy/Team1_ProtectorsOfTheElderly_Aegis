@@ -26,23 +26,16 @@ while not done_email_input:
         done_email_input = False
 print("--------------------------------------------------------------------------------------")
 
-
-
-
 # Later be able to send live camera feed to other py files !---#############################################
 # For now its saved recordings from raw_recordings folder using recording_live.py
 subprocess.run(["python", "recording_live.py"])
-
 
 # Get the path to the raw recordings
 script_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(script_dir, "raw_recordings")
 
-
 # Now list all the files in folder
 videos = os.listdir(folder_path)
-
-
 for video in videos:
     # Get the video file name
     video_file_name = video
@@ -53,7 +46,6 @@ for video in videos:
         # Print result
         print(check_result, "\n")
         # Maybe add file renaming here/Flag fall event/Moving it to fall_detected folder !---#############################################
-
 
         # Than send out notification if fall is detected
         print("---------------------------------------------------------------------")
