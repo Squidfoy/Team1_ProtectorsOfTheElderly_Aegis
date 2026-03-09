@@ -6,6 +6,10 @@ import os
 import ai_fall_detection
 from notification import send_notif
 
+# Create the raw_recordings empty folder to store the videos in
+# Since github doesn't allow empty folder uploads
+make_folder = "raw_recordings"
+os.makedirs(make_folder, exist_ok=True)
 
 # Get the contact info of whoever gets the notifications alert
 # We can make this more polished with UI later !---#############################################
