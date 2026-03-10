@@ -15,4 +15,4 @@ This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAl
 
 Link to the dataset: https://fenix.ur.edu.pl/mkepski/ds/uf.html
 
-Note about camera placement: This fall detection works from side views and not birds-eye so cameras installed in the ceiling will not work. This is designed for wall/corner cameras. 
+Note about camera placement: This fall detection works from side views and not birds-eye so cameras installed in the ceiling will not work. This is designed for wall/corner cameras.
