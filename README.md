@@ -1,8 +1,12 @@
+# Team1_ProtectorsOfTheElderly_Aegis
+
 To begin, ensure you have python installed on your system.
 
 Then install the required packages by running pip install ultralytics opencv-python in the terminal. ultralytics is the package that contains YOLOv8 and opencv-pyton handles video processing. 
 
-Run the pose_test file by running "python pose_test.py" in your terminal
+pose_test.py currently works with the users webcam and test_on_dataset.py tests dataset videos.
+
+The fall detection works with YOLOv8 with is avalible for private use under the AGPL-3.0 license
 
 Note: for the fall videos here I have used the UR fall detection dataset:
 Bogdan Kwolek, Michal Kepski, Human fall detection on embedded platform using depth maps and wireless accelerometer, Computer Methods and Programs in Biomedicine, Volume 117, Issue 3, December 2014, Pages 489-501, ISSN 0169-2607 [Link]

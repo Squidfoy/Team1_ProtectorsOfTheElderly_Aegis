@@ -17,7 +17,6 @@ def get_keypoint(keypoints, index):
     kp = keypoints[index]
     return int(kp[0]), int(kp[1])
 
-# 
 def calculate_angle(p1, p2):
     # Calculate the angle (in degrees) of the line between two points.
     dx = p2[0] - p1[0]
@@ -25,7 +24,7 @@ def calculate_angle(p1, p2):
     angle = abs(np.degrees(np.arctan2(dy, dx)))
     return angle
 
-def is_fall(keypoints, frame_height):
+def is_fall(keypoints, frame_height, prev_hip_y=None):
     """
     Fall detection logic using shoulder and hip keypoints.
     Returns True if a fall is detected.
@@ -58,14 +57,21 @@ def is_fall(keypoints, frame_height):
         torso_is_horizontal = torso_angle < 30 or torso_angle > 150
         hips_are_low = hip_height_ratio > 0.7
 
-        return torso_is_horizontal and hips_are_low
+        rapid_drop = False
+        if prev_hip_y is not None:
+            drop_amount = hip_mid[1] - prev_hip_y
+            drop_ratio = drop_amount / frame_height
+            rapid_drop = drop_ratio > 0.05
+
+        return (torso_is_horizontal and hips_are_low) or (rapid_drop and hips_are_low)
 
     except Exception:
         return False
 
 frame_height = None
 fall_frame_count = 0
-FALL_FRAMES_THRESHOLD = 10  # Fall must persist for 10 frames to avoid false positives
+FALL_FRAMES_THRESHOLD = 5  # Fall must persist for 5 frames to avoid false positives
+prev_hip_y = None
 
 while True:
     ret, frame = cap.read()
@@ -84,6 +90,13 @@ while True:
             for person_keypoints in result.keypoints.data:
                 if is_fall(person_keypoints, frame_height):
                     fall_detected = True
+                # Update prev_hip_y AFTER checking for fall
+                try:
+                    left_hip = get_keypoint(person_keypoints, 11)
+                    right_hip = get_keypoint(person_keypoints, 12)
+                    prev_hip_y = (left_hip[1] + right_hip[1]) // 2
+                except Exception:
+                    pass
 
     # Require the fall to persist across multiple frames
     if fall_detected:
