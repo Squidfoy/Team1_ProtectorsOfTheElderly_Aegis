@@ -1,6 +1,6 @@
 # Team1_ProtectorsOfTheElderly_Aegis
 
-To begin, ensure you have python installed on your system.
+To begin, ensure you have python installed on your system. Also insure ffmpeg is installed or the detection will not work.
 
 Then install the required packages by running pip install ultralytics opencv-python in the terminal. ultralytics is the package that contains YOLOv8 and opencv-pyton handles video processing. 
 
