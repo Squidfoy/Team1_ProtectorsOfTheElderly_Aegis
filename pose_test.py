@@ -6,8 +6,8 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-# Load the YOLOv8 pose model (downloads automatically first time)
-model = YOLO("yolov8n-pose.pt")
+# Load the YOLOv11 pose model (downloads automatically first time)
+model = YOLO("yolov11n-pose.pt")
 
 # Open your webcam (0 = default camera)
 cap = cv2.VideoCapture(0)
@@ -57,6 +57,7 @@ def is_fall(keypoints, frame_height, prev_hip_y=None):
         torso_is_horizontal = torso_angle < 30 or torso_angle > 150
         hips_are_low = hip_height_ratio > 0.7
 
+        # Check for rapid downward drop
         rapid_drop = False
         if prev_hip_y is not None:
             drop_amount = hip_mid[1] - prev_hip_y

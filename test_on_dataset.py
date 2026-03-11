@@ -3,7 +3,10 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-model = YOLO("yolov8n-pose.pt")
+# I chose v11 rather than v12 becuase 11 excels in accuracy and has faster CPU inference speeds
+# (2.4 ms to 4.7 ms rather than 5.6 ms or higher on the 12), 
+# making it good for systems without a specified GPU(like the raspberry pi) 
+model = YOLO("yolo11n-pose.pt")  
 
 def get_keypoint(keypoints, index):
     kp = keypoints[index]
