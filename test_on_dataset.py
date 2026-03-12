@@ -110,20 +110,9 @@ def test_video(video_path, expected_label):
 
     return result_type
 
-    # # Determine if the result was correct
-    # correct = (fall_detected_in_video and expected_label == "fall") or \
-    #           (not fall_detected_in_video and expected_label == "no_fall")
-
-    # status = "CORRECT" if correct else "WRONG"
-    # detected = "FALL" if fall_detected_in_video else "NO FALL"
-    # print(f"{status} | Expected: {expected_label.upper()} | Got: {detected} | File: {video_path}")
-
-    # return correct
-
 def run_all_tests():
     import os
 
-    # results = {"correct": 0, "total": 0}
     counts = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
 
     # Test fall videos only works on mp4, avi, mov files
@@ -156,36 +145,15 @@ def run_all_tests():
     print(f"  FN: {FN}  |  TN: {TN}")
     print(f"\n--- Metrics ---")
     print(f"Accuracy:           {accuracy:.1f}%")
-    print(f"Precision:          {precision:.1f}%")
+    # of all the times we said "fall", how many were actually falls?
+    print(f"Precision:          {precision:.1f}%") 
+    # of all the actual falls, how many did we correctly identify as falls? (more important than precision)
     print(f"Recall:             {recall:.1f}%")
+    # The harmonic mean of precision and recall, gives a single score that balances both concerns
     print(f"F1 Score:           {f1:.1f}%")
     print(f"False Positive Rate:{fpr:.1f}%")
     print(f"False Negative Rate:{fnr:.1f}%")
     print(f"\nTotal videos tested: {total}")
-
-    # # Test fall videos - only works on mp4 files
-    # fall_dir = "test_videos/falls"
-    # for filename in os.listdir(fall_dir):
-    #     if filename.endswith((".mp4")):
-    #         correct = test_video(os.path.join(fall_dir, filename), "fall")
-    #         results["total"] += 1
-    #         if correct:
-    #             results["correct"] += 1
-
-    # # Test non-fall videos - only works on mp4 files
-    # no_fall_dir = "test_videos/no_falls"
-    # for filename in os.listdir(no_fall_dir):
-    #     if filename.endswith((".mp4")):
-    #         correct = test_video(os.path.join(no_fall_dir, filename), "no_fall")
-    #         results["total"] += 1
-    #         if correct:
-    #             results["correct"] += 1
-
-    # # Print summary
-    # accuracy = (results["correct"] / results["total"]) * 100 if results["total"] > 0 else 0
-    # print(f"\n--- Results ---")
-    # print(f"Correct: {results['correct']} / {results['total']}")
-    # print(f"Accuracy: {accuracy:.1f}%")
 
 if __name__ == "__main__":
     run_all_tests()
