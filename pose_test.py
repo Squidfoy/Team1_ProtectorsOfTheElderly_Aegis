@@ -1,5 +1,6 @@
 # this should open your webcam and draw a skeleton overlay on any person it detects — 17 keypoints 
 # like shoulders, hips, knees, ankles, etc.
+# This works for live fall detection
 
 # This is Open Source Computer Vision Library. It is used for real-time computer vision applications.
 import cv2
