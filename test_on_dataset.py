@@ -93,44 +93,67 @@ def test_video(video_path, expected_label):
 
     cap.release()
 
-    # Determine if the result was correct
-    correct = (fall_detected_in_video and expected_label == "fall") or \
-              (not fall_detected_in_video and expected_label == "no_fall")
-
-    status = "CORRECT" if correct else "WRONG"
+    # Classify result into TP, TN, FP, FN
+    if fall_detected_in_video and expected_label == "fall":
+        result_type = "TP"
+    elif not fall_detected_in_video and expected_label == "no_fall":
+        result_type = "TN"
+    elif fall_detected_in_video and expected_label == "no_fall":
+        result_type = "FP"
+    else:
+        result_type = "FN"
+    
     detected = "FALL" if fall_detected_in_video else "NO FALL"
-    print(f"{status} | Expected: {expected_label.upper()} | Got: {detected} | File: {video_path}")
+    correct = result_type in ("TP", "TN")
+    status = "CORRECT" if correct else "WRONG"
+    print(f"{status} [{result_type}] | Expected: {expected_label.upper()} | Got: {detected} | File: {video_path}")
 
-    return correct
+    return result_type
 
 def run_all_tests():
     import os
 
-    results = {"correct": 0, "total": 0}
+    counts = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
 
-    # Test fall videos - only works on mp4 files
+    # Test fall videos only works on mp4, avi, mov files
     fall_dir = "test_videos/falls"
     for filename in os.listdir(fall_dir):
-        if filename.endswith((".mp4")):
-            correct = test_video(os.path.join(fall_dir, filename), "fall")
-            results["total"] += 1
-            if correct:
-                results["correct"] += 1
+        if filename.endswith((".mp4", ".avi", ".mov")):
+            result_type = test_video(os.path.join(fall_dir, filename), "fall")
+            counts[result_type] += 1
 
-    # Test non-fall videos - only works on mp4 files
+    # Test no fall videos on mp4, avi, mov files
     no_fall_dir = "test_videos/no_falls"
     for filename in os.listdir(no_fall_dir):
-        if filename.endswith((".mp4")):
-            correct = test_video(os.path.join(no_fall_dir, filename), "no_fall")
-            results["total"] += 1
-            if correct:
-                results["correct"] += 1
+        if filename.endswith((".mp4", ".avi", ".mov")):
+            result_type = test_video(os.path.join(no_fall_dir, filename), "no_fall")
+            counts[result_type] += 1
 
-    # Print summary
-    accuracy = (results["correct"] / results["total"]) * 100 if results["total"] > 0 else 0
-    print(f"\n--- Results ---")
-    print(f"Correct: {results['correct']} / {results['total']}")
-    print(f"Accuracy: {accuracy:.1f}%")
+    # Calculate metrics
+    TP, TN, FP, FN = counts["TP"], counts["TN"], counts["FP"], counts["FN"]
+    total = TP + TN + FP + FN
+
+    accuracy  = (TP + TN) / total * 100 if total > 0 else 0
+    precision = TP / (TP + FP) * 100 if (TP + FP) > 0 else 0
+    recall    = TP / (TP + FN) * 100 if (TP + FN) > 0 else 0
+    f1        = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+    fpr       = FP / (FP + TN) * 100 if (FP + TN) > 0 else 0  # false positive rate
+    fnr       = FN / (FN + TP) * 100 if (FN + TP) > 0 else 0  # false negative rate
+
+    print(f"\n--- Confusion Matrix ---")
+    print(f"  TP: {TP}  |  FP: {FP}")
+    print(f"  FN: {FN}  |  TN: {TN}")
+    print(f"\n--- Metrics ---")
+    print(f"Accuracy:           {accuracy:.1f}%")
+    # of all the times we said "fall", how many were actually falls?
+    print(f"Precision:          {precision:.1f}%") 
+    # of all the actual falls, how many did we correctly identify as falls? (more important than precision)
+    print(f"Recall:             {recall:.1f}%")
+    # The harmonic mean of precision and recall, gives a single score that balances both concerns
+    print(f"F1 Score:           {f1:.1f}%")
+    print(f"False Positive Rate:{fpr:.1f}%")
+    print(f"False Negative Rate:{fnr:.1f}%")
+    print(f"\nTotal videos tested: {total}")
 
 if __name__ == "__main__":
     run_all_tests()
