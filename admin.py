@@ -5,6 +5,8 @@ import subprocess
 import os
 import ai_fall_detection
 from notification import send_notif
+import atexit
+import organization
 
 # Create the raw_recordings empty folder to store the videos in
 # Since github doesn't allow empty folder uploads
@@ -34,6 +36,11 @@ subprocess.run(["python", "recording_live.py"])
 script_dir = os.path.dirname(os.path.abspath(__file__))
 folder_path = os.path.join(script_dir, "raw_recordings")
 
+# Setup and Auto-Cleanup ---
+archived_dir = os.path.join(script_dir, "archived_falls")
+os.makedirs(archived_dir, exist_ok=True)
+atexit.register(organization.cleanup_old_files, [folder_path, archived_dir])
+
 # Now list all the files in folder
 videos = os.listdir(folder_path)
 for video in videos:
@@ -41,11 +48,18 @@ for video in videos:
     video_file_name = video
     # Make sure its a mp4 before using model
     if video.endswith(".mp4"):
+        file_path = os.path.join(folder_path, video_file_name)
         # Than use ai model here to check for fall using the video file name
         check_result = ai_fall_detection.fall_check(folder_path, video_file_name)
         # Print result
         print(check_result, "\n")
         # Maybe add file renaming here/Flag fall event/Moving it to fall_detected folder !---#############################################
+        # Determine if fall was detected
+        is_fall = "FALL DETECTED" in check_result
+
+        # USE ORGANIZATION MODULE
+        # This handles moving to archive or deleting immediately
+        organization.manage_video(file_path, video_file_name, is_fall)
 
         # Than send out notification if fall is detected
         print("---------------------------------------------------------------------")
