@@ -26,11 +26,11 @@ def calculate_angle(p1, p2):
     angle = abs(np.degrees(np.arctan2(dy, dx)))
     return angle
 
-def is_fall(keypoints, frame_height, prev_hip_y=None):
+def is_fall(keypoints, frame_height, prev_hip_y=None,  bbox=None, prev_bbox=None):
     """
     Fall detection logic using shoulder and hip keypoints.
     Returns True if a fall is detected.
-
+    
     YOLOv8 keypoint indices:
     5 = left shoulder, 6 = right shoulder
     11 = left hip, 12 = right hip
@@ -66,8 +66,28 @@ def is_fall(keypoints, frame_height, prev_hip_y=None):
             drop_ratio = drop_amount / frame_height
             rapid_drop = drop_ratio > 0.05
 
-        return (torso_is_horizontal and hips_are_low) or (rapid_drop and hips_are_low)
+        #Check bounding box shape — standing is tall/narrow, fallen is wide/short
+        bbox_horizontal = False
+        if bbox is not None:
+            bbox_width = bbox[2] - bbox[0]
+            bbox_height = bbox[3] - bbox[1]
+            if bbox_height > 0:
+                aspect_ratio = bbox_width / bbox_height
+                bbox_horizontal = aspect_ratio > 1.5  # wider than tall = likely fallen
 
+        #Check if bounding box grew suddenly (falling toward camera)
+        sudden_growth = False
+        if bbox is not None and prev_bbox is not None:
+            prev_area = (prev_bbox[2] - prev_bbox[0]) * (prev_bbox[3] - prev_bbox[1])
+            curr_area = (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
+            if prev_area > 0:
+                growth_ratio = (curr_area - prev_area) / prev_area
+                sudden_growth = growth_ratio > 0.25
+
+        return (torso_is_horizontal and hips_are_low) or \
+                (rapid_drop and hips_are_low) or \
+                (bbox_horizontal and sudden_growth)
+    
     except Exception:
         return False
 

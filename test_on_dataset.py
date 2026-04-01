@@ -18,7 +18,7 @@ def calculate_angle(p1, p2):
     angle = abs(np.degrees(np.arctan2(dy, dx)))
     return angle
 
-def is_fall(keypoints, frame_height, prev_hip_y=None):
+def is_fall(keypoints, frame_height, prev_hip_y=None,  bbox=None, prev_bbox=None):
     try:
         left_shoulder = get_keypoint(keypoints, 5)
         right_shoulder = get_keypoint(keypoints, 6)
@@ -42,7 +42,29 @@ def is_fall(keypoints, frame_height, prev_hip_y=None):
             drop_ratio = drop_amount / frame_height
             rapid_drop = drop_ratio > 0.05
 
-        return (torso_is_horizontal and hips_are_low) or (rapid_drop and hips_are_low)
+        #Check bounding box shape — standing is tall/narrow, fallen is wide/short
+        bbox_horizontal = False
+        if bbox is not None:
+            bbox_width = bbox[2] - bbox[0]
+            bbox_height = bbox[3] - bbox[1]
+            if bbox_height > 0:
+                aspect_ratio = bbox_width / bbox_height
+                bbox_horizontal = aspect_ratio > 1.5  # wider than tall = likely fallen
+
+        #Check if bounding box grew suddenly (falling toward camera)
+        sudden_growth = False
+        if bbox is not None and prev_bbox is not None:
+            prev_area = (prev_bbox[2] - prev_bbox[0]) * (prev_bbox[3] - prev_bbox[1])
+            curr_area = (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
+            if prev_area > 0:
+                growth_ratio = (curr_area - prev_area) / prev_area
+                sudden_growth = growth_ratio > 0.25  
+
+
+        return (torso_is_horizontal and hips_are_low) or \
+                (rapid_drop and hips_are_low) or \
+                (bbox_horizontal and sudden_growth)
+
 
     except Exception:
         return False
@@ -55,9 +77,10 @@ def test_video(video_path, expected_label):
     cap = cv2.VideoCapture(video_path)
     fall_frame_count = 0
     total_frames = 0
-    FALL_FRAMES_THRESHOLD = 5 
+    FALL_FRAMES_THRESHOLD = 5  # Number of consecutive frames with fall detected to confirm fall
     fall_detected_in_video = False
     prev_hip_y = None  # Track previous hip y-coordinate for rapid drop detection
+    prev_bbox = None  # Track previous bounding box for sudden growth detection
 
     while True:
         ret, frame = cap.read()
@@ -70,17 +93,27 @@ def test_video(video_path, expected_label):
 
         fall_in_frame = False
         for result in results:
-            if result.keypoints is not None:
-                for person_keypoints in result.keypoints.data:
-                    if is_fall(person_keypoints, frame_height):
+            if result.keypoints is not None and result.boxes is not None:
+                for i, person_keypoints in enumerate(result.keypoints.data):
+
+                # Get bounding box for this person
+                    bbox = None
+                    if i < len(result.boxes.data):
+                        box = result.boxes.data[i]
+                        bbox = (int(box[0]), int(box[1]), int(box[2]), int(box[3]))
+
+                    if is_fall(person_keypoints, frame_height, prev_hip_y, bbox, prev_bbox):
                         fall_in_frame = True
-                    # Update prev_hip_y for next frame
+
+                    # Update tracking variables after checking for fall
                     try:
                         left_hip = get_keypoint(person_keypoints, 11)
                         right_hip = get_keypoint(person_keypoints, 12)
                         prev_hip_y = (left_hip[1] + right_hip[1]) // 2
                     except Exception:
                         pass
+
+                    prev_bbox = bbox
 
         if fall_in_frame:
             fall_frame_count += 1
