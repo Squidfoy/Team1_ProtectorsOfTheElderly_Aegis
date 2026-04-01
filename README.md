@@ -140,10 +140,10 @@ Aegis was developed by students at the **University of Missouri** as part of the
 
 | Name | Role |
 |------|------|
-| Alianna Card | Research, privacy compliance, documentation |
-| Julia Albay | Hardware integration, Raspberry Pi setup |
-| Sania Akter Sohana | AI model implementation and optimization |
-| Pranaya Bollu | Notification system, pipeline integration, UI |
+| Alianna Card | AI model implementation and optimization |
+| Julia Albay | Baseline system architecture |
+| Sania Akter Sohana | Backend video organization |
+| Pranaya Bollu | |
 
 **Mentor:** Michael Tompkins
 
