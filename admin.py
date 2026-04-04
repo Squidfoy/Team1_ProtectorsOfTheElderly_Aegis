@@ -1,72 +1,114 @@
 # Control the whole project from this admin file
 # Last edited by: Julia
-# Last updated date: Mon Mar 9 2026
-import subprocess
-import os
-import ai_fall_detection
-from notification import send_notif
-import atexit
-import organization
+# Last updated date: Fri Apr 4 2026
+import subprocess # To run other python files/system commands
+import os # Give access to video files, folders, paths
+import ai_fall_detection # Process the videos for fall
+from notification import send_notif # To send notification
+import atexit # To clean up videos automatically
+import organization # organize videos
 
-# Create the raw_recordings empty folder to store the videos in
-# Since github doesn't allow empty folder uploads
-make_folder = "raw_recordings"
-os.makedirs(make_folder, exist_ok=True)
-
-# Get the contact info of whoever gets the notifications alert
-# We can make this more polished with UI later !---#############################################
-done_email_input = False
-while not done_email_input:
-    print("Who's email address would you like the fall alert notifications to be sent to?")
-    print("Enter the email address here: ")
-    email = input()
-    print("\nIs ", email, " the correct email? Enter y for YES, n for NO: ")
-    confirmation = input()
-    if confirmation == "y":
-        done_email_input = True
-    else:
-        done_email_input = False
-print("--------------------------------------------------------------------------------------")
-
-# Later be able to send live camera feed to other py files !---#############################################
-# For now its saved recordings from raw_recordings folder using recording_live.py
-subprocess.run(["python", "recording_live.py"])
-
-# Get the path to the raw recordings
-script_dir = os.path.dirname(os.path.abspath(__file__))
-folder_path = os.path.join(script_dir, "raw_recordings")
-
-# Setup and Auto-Cleanup ---
-archived_dir = os.path.join(script_dir, "archived_falls")
-os.makedirs(archived_dir, exist_ok=True)
-atexit.register(organization.cleanup_old_files, [folder_path, archived_dir])
-
-# Now list all the files in folder
-videos = os.listdir(folder_path)
-for video in videos:
-    # Get the video file name
-    video_file_name = video
-    # Make sure its a mp4 before using model
-    if video.endswith(".mp4"):
-        file_path = os.path.join(folder_path, video_file_name)
-        # Than use ai model here to check for fall using the video file name
-        check_result = ai_fall_detection.fall_check(folder_path, video_file_name)
-        # Print result
-        print(check_result, "\n")
-        # Maybe add file renaming here/Flag fall event/Moving it to fall_detected folder !---#############################################
-        # Determine if fall was detected
-        is_fall = "FALL DETECTED" in check_result
-
-        # USE ORGANIZATION MODULE
-        # This handles moving to archive or deleting immediately
-        organization.manage_video(file_path, video_file_name, is_fall)
-
-        # Than send out notification if fall is detected
-        print("---------------------------------------------------------------------")
-        send_notif(email, video_file_name)
-    else:
-        print(video, " is not a mp4 file.")
+# The log names for the termial and video activity to be used in UI
+LOG_FILE = "admin_log.txt"
+VIDEO_LIST_FILE = "video_list.txt"
 
 
-# Maybe build a loop for those two pys files to run for certain amount of time !---#############################################
-# But we'll do that after midterm maybe !---#############################################
+# Log the terminal for UI
+def log(text):
+    print(text)
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(text + "\n")
+
+# Log the video list file
+def update_video_list_file(folder_path):
+    videos = [f for f in os.listdir(folder_path) if f.endswith(".mp4")]
+
+    with open(VIDEO_LIST_FILE, "w", encoding="utf-8") as f:
+        if not videos:
+            f.write("No videos found.\n")
+        else:
+            for vid in videos:
+                f.write(vid + "\n")
+
+# Main function to run everything
+def run_admin(email):
+    # Clear logs at start
+    with open(LOG_FILE, "w", encoding="utf-8") as f:
+        f.write(f"The email user entered: {email}\n")
+        f.write("---------------------------------------------------\n")
+
+    with open(VIDEO_LIST_FILE, "w", encoding="utf-8") as f:
+        f.write("Loading videos...\n")
+
+    # Make sure folders exist
+    make_folder = "raw_recordings"
+    os.makedirs(make_folder, exist_ok=True)
+    log(f"Make sure the video folder exists: {make_folder}")
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(script_dir, "raw_recordings")
+
+    archived_dir = os.path.join(script_dir, "archived_falls")
+    os.makedirs(archived_dir, exist_ok=True)
+
+    # Cleanup videos folder on exit
+    atexit.register(organization.cleanup_old_files, [folder_path, archived_dir])
+
+    # Start recording
+    log("Starting recording_live.py ...")
+    try:
+        subprocess.run(["python", "recording_live.py"], check=True)
+        log("Recording finished.")
+    except subprocess.CalledProcessError as e:
+        log(f"Error running recording_live.py: {e}")
+
+    # Update list after recording
+    update_video_list_file(folder_path)
+
+    # Process the videos
+    videos = os.listdir(folder_path)
+
+    if not videos:
+        log("No videos found in raw_recordings.")
+
+    for video in videos:
+        if not video.endswith(".mp4"):
+            log(f"{video} is not a mp4 file, skipping.")
+            continue
+
+        file_path = os.path.join(folder_path, video)
+        log(f"Processing {video} ...")
+
+        # Run AI fall detection
+        try:
+            check_result = ai_fall_detection.fall_check(folder_path, video)
+            log(f"Result: {check_result}")
+            is_fall = "FALL DETECTED" in check_result
+        except Exception as e:
+            log(f"Error processing {video}: {e}")
+            continue
+
+        # Manage video (move/delete)
+        try:
+            organization.manage_video(file_path, video, is_fall)
+            log(f"Handled video: {video}")
+        except Exception as e:
+            log(f"Error managing {video}: {e}")
+
+        # Update video list after change
+        update_video_list_file(folder_path)
+
+        # Send notification
+        try:
+            if is_fall:
+                send_notif(email, video)
+                log(f"Notification sent for {video}")
+        except Exception as e:
+            log(f"Error sending notification: {e}")
+
+        log("---------------------------------------------------")
+
+    # Let user know program is done
+    log("Finished detecting for falls.")
+    log("You may exit.")
+    
