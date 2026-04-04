@@ -1,5 +1,5 @@
 # Aegis — AI-Based Fall Detection System
-Aegis is a privacy-focused, camera-based fall detection system designed for elderly individuals living alone. It uses AI pose estimation to passively monitor for falls and instantly notifies a designated caretaker — no wearables required.
+Aegis is a privacy-focused, camera-based fall detection system designed for elderly individuals living alone. It uses AI pose estimation to passively monitor for falls and instantly notifies a designated caretaker, no wearables required.
 
 ## Table of Contents
 - [Features](#features)
@@ -16,19 +16,19 @@ Aegis is a privacy-focused, camera-based fall detection system designed for elde
 ---
 
 ## Features
-- Passive fall detection using standard security cameras — no wearables needed
+- Passive fall detection using standard security cameras: no wearables needed
 - Real-time pose estimation using YOLO11
 - Instant caretaker notification via email when a fall is detected
-- Fully local processing — no cloud storage, no subscription fees
-- Minimal data retention — only timestamp and camera location are saved
+- Fully local processing: no cloud storage, no subscription fees
+- Minimal data retention: only timestamp and camera location are saved
 
 ---
 
 ## How It Works
 Aegis uses a two-stage AI pipeline:
 
-1. **Human Detection** — the system first checks whether a person is present in the camera frame. If no person is detected, the fall detection pipeline stays dormant to conserve energy.
-2. **Fall Detection** — once a person is detected, Aegis monitors their posture in real time using skeletal keypoint analysis. It looks for indicators of a fall including:
+1. **Human Detection**: the system first checks whether a person is present in the camera frame. If no person is detected, the fall detection pipeline stays dormant to conserve energy.
+2. **Fall Detection**: once a person is detected, Aegis monitors their posture in real time using skeletal keypoint analysis. It looks for indicators of a fall including:
    - Torso becoming horizontal
    - Hips dropping suddenly toward the floor
    - Bounding box shifting from tall/narrow to wide/short
@@ -56,6 +56,7 @@ When a fall is confirmed across multiple consecutive frames, a notification is s
 ultralytics
 opencv-python
 numpy
+Tkinter
 ```
 Install them with:
 ```bash
@@ -76,6 +77,15 @@ cd aegis
 ```bash
 pip install ultralytics opencv-python numpy
 ```
+Installing FFmpeg onto Raspberry Pi or Linux:
+```bash
+sudo apt update
+sudo upgrade -y
+sudo apt install ffmpeg -y
+ffmpeg -version
+```
+When you see ffmpeg version info you're done.
+To install it on Windows follow this [Youtube Video Link](https://youtu.be/SG1Fc5QB8RE)
 
 3. On first run, the YOLO11 model will download automatically.
 
@@ -119,11 +129,11 @@ Aegis is designed for practical home use but has several known limitations that 
 
 - **Falls toward the camera** are harder to detect than side-on falls. The system uses bounding box analysis to partially address this, but accuracy is lower for this fall direction. Avoid placing the camera in a position where a person would fall directly toward it.
 - **Ceiling-mounted cameras** are not supported. The top-down perspective breaks the pose-based detection logic entirely.
-- **Occlusion** — if the person's body is partially blocked by furniture or other objects, keypoint detection may fail and falls could be missed.
+- **Occlusion**: if the person's body is partially blocked by furniture or other objects, keypoint detection may fail and falls could be missed.
 - **Slow, deliberate movements to the floor** (such as someone intentionally lying down or getting on the floor to look under furniture) may occasionally trigger a false positive. The system uses posture history to reduce this, but edge cases remain.
-- **Single-person monitoring** — the system is optimized for monitoring one person at a time. Accuracy may decrease in scenes with multiple people.
-- **Lighting sensitivity** — very dark environments or scenes with dramatic lighting changes (e.g. flickering lights) may reduce detection accuracy.
-- **Camera angle sensitivity** — the system is optimized for standard wall or corner-mounted cameras. Unusual angles may affect accuracy.
+- **Single-person monitoring**: the system is optimized for monitoring one person at a time. Accuracy may decrease in scenes with multiple people.
+- **Lighting sensitivity**: very dark environments or scenes with dramatic lighting changes (e.g. flickering lights) may reduce detection accuracy.
+- **Camera angle sensitivity**: the system is optimized for standard wall or corner-mounted cameras. Unusual angles may affect accuracy.
 - **Falls where the person's back is fully facing the camera** may result in missed detections due to keypoint occlusion.
 
 ---
@@ -132,9 +142,9 @@ Aegis is designed for practical home use but has several known limitations that 
 
 Aegis is designed with user privacy as a core principle:
 
-- All processing happens **locally on-device** — no video is ever sent to the cloud.
+- All processing happens **locally on-device**: no video is ever sent to the cloud.
 - **No video footage is stored** after processing. Only the timestamp and camera location of a detected fall are saved.
-- Caretaker notifications contain only the time and location of the event — no images or video clips are included.
+- Caretaker notifications contain only the time and location of the event, no images or video clips are included.
 - All data is deleted once the notification has been sent or if no fall is detected.
 
 ## Team
@@ -155,7 +165,7 @@ Aegis was developed by students at the **University of Missouri** as part of the
 ## Licenses
 **YOLO11** is used for pose estimation and is available for private use under the [AGPL-3.0 License](https://www.gnu.org/licenses/agpl-3.0.html). If you plan to use Aegis in a commercial context, a separate Ultralytics commercial license would be required.
 
-**UR Fall Detection Dataset** — the test videos used during development are from the UR Fall Detection Dataset:
+**UR Fall Detection Dataset**: the test videos used during development are from the UR Fall Detection Dataset:
 
 > Bogdan Kwolek, Michal Kepski, "Human fall detection on embedded platform using depth maps and wireless accelerometer," *Computer Methods and Programs in Biomedicine*, Volume 117, Issue 3, December 2014, Pages 489-501, ISSN 0169-2607. [Dataset Link](https://fenix.ur.edu.pl/mkepski/ds/uf.html)
 
