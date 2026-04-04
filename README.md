@@ -11,6 +11,7 @@ Aegis is a privacy-focused, camera-based fall detection system designed for elde
 - [Known Limitations](#known-limitations)
 - [Privacy](#privacy)
 - [Team](#team)
+- [Licenses](#licenses)
 
 ---
 
@@ -41,10 +42,12 @@ When a fall is confirmed across multiple consecutive frames, a notification is s
 
 ### Hardware
 - Raspberry Pi 5 
+- Raspberry Pi 5 AI HAT +2
 - Compatible USB camera (standard wall or corner mount)
-- MicroSD card
-- Power cables and adapters for Raspberry Pi
-- Raspberry Pi AI HAT +2
+- MicroSD card and reader
+- Power cables for Raspberry Pi (USBC)
+- MicroHDMI to HDMI for setup
+- Monitor o
 
 ### Software
 - Python 3.10 or 3.11
@@ -147,16 +150,15 @@ Aegis was developed by students at the **University of Missouri** as part of the
 
 **Mentor:** Michael Tompkins
 
+---
 
+## Licenses
+**YOLO11** is used for pose estimation and is available for private use under the [AGPL-3.0 License](https://www.gnu.org/licenses/agpl-3.0.html). If you plan to use Aegis in a commercial context, a separate Ultralytics commercial license would be required.
 
+**UR Fall Detection Dataset** — the test videos used during development are from the UR Fall Detection Dataset:
 
+> Bogdan Kwolek, Michal Kepski, "Human fall detection on embedded platform using depth maps and wireless accelerometer," *Computer Methods and Programs in Biomedicine*, Volume 117, Issue 3, December 2014, Pages 489-501, ISSN 0169-2607. [Dataset Link](https://fenix.ur.edu.pl/mkepski/ds/uf.html)
 
+This dataset is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/) and is intended for non-commercial academic use only.
 
-The fall detection works with YOLOv11 with is avalible for private use under the AGPL-3.0 license
-
-Note: for the fall videos here I have used the UR fall detection dataset:
-Bogdan Kwolek, Michal Kepski, Human fall detection on embedded platform using depth maps and wireless accelerometer, Computer Methods and Programs in Biomedicine, Volume 117, Issue 3, December 2014, Pages 489-501, ISSN 0169-2607 [Link]
-
-This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License and is intended for non-commercial academic use. 
-
-Link to the dataset: https://fenix.ur.edu.pl/mkepski/ds/uf.html
+---
