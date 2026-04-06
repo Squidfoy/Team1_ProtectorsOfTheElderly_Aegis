@@ -21,6 +21,7 @@ Aegis the AI Based Fall Detection System is a privacy focused, camera based fall
 - Instant caretaker notification via email when a fall is detected
 - Fully local processing: no cloud storage, no subscription fees
 - Minimal data retention: only timestamp and camera location are saved
+- Touch screen, keyboard and mouse compatible UI
 
 ---
 
