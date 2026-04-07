@@ -1,0 +1,11 @@
+Camera Placement Guidelines
+
+Proper camera placement is critical for accurate fall detection. Please follow these guidelines:
+
+-Mount the camera at a 45-degree angle: from a wall or corner, roughly 6–8 feet off the ground. This gives the best view of the full body.
+-Do not mount the camera on the ceiling. A top-down view makes everyone appear horizontal and will cause constant false positives.
+-Do not mount the camera directly facing where the person will walk toward it. Falls toward the camera are harder to detect than side-on falls.
+-Ensure the camera has a clear, unobstructed view of the monitored area. Objects blocking the frame will reduce detection accuracy.
+-Avoid placing the camera behind glass: reflections and distortion affect detection quality.
+-Ensure adequate lighting. The system works best in well-lit environments. Avoid placing the camera where it will be looking directly into a bright light source.
+-Test the camera feed before relying on the system by running `pose_test.py` and confirming the skeleton overlay appears correctly on a person standing in the monitored area.

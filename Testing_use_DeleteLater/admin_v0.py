@@ -59,7 +59,11 @@ for video in videos:
 
         # USE ORGANIZATION MODULE
         # This handles moving to archive or deleting immediately
-        organization.manage_video(file_path, video_file_name, is_fall)
+        ######################################################################################
+        # This code needs to be changed to maybe delete videos when the program starts?\
+        # Since it deletes right after program ends, which is good for later but for testing not ideal
+        #######################################################################################
+        #organization.manage_video(file_path, video_file_name, is_fall)
 
         # Than send out notification if fall is detected
         print("---------------------------------------------------------------------")
