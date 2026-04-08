@@ -1,20 +1,62 @@
-# Here you send out the notification to the right emails that admin.py gives
-# Last edited by: Julia
-# Last updated date: Mon Mar 9 2026
+# Sends fall alert notifications via email (Gmail)
+# Last edited by: Alianna
+# Last updated date: Wed Apr 8 2026
 import os
+import re
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()
+
+EMAIL_ADDRESS  = os.getenv("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 
-# Pranaya down here you can set up the program to send out real emails *************************************
+def validate_email(email):
+    """Check if email address format is valid."""
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(pattern, email) is not None
 
 
-def send_notif(email, video_file_name):
-    # Just to check if it got the info/demo test !---#############################################
-    print("Fall Alert sent to: ", email)
-    # Later get camera name from admin, for now webcam is placeholder name !---#############################################
-    camera_name = "webcam"
-    date, ext = os.path.splitext(video_file_name)
-    message = "Fall detected from {} at {}".format(camera_name, date)
-    print("Message sent: ", message, "\n")
+def build_message(camera_name, video_file_name):
+    """Build the notification message with timestamp and camera info."""
+    now = datetime.now()
+    date_str = now.strftime("%B %d, %Y")
+    time_str = now.strftime("%I:%M %p")
+    return (
+        f"AEGIS FALL ALERT\n\n"
+        f"A fall was detected!\n"
+        f"Date: {date_str}\n"
+        f"Time: {time_str}\n"
+        f"Camera: {camera_name}\n"
+        f"File: {video_file_name}"
+    )
 
 
-    return True
+def send_notif(email, video_file_name, camera_name="webcam"):
+    """Send fall alert via Gmail."""
+    if not validate_email(email):
+        print(f"Invalid email format: {email}")
+        return False
+
+    message = build_message(camera_name, video_file_name)
+
+    try:
+        msg = MIMEMultipart()
+        msg["From"]    = EMAIL_ADDRESS
+        msg["To"]      = email
+        msg["Subject"] = "Aegis Fall Alert"
+        msg.attach(MIMEText(message, "plain"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.sendmail(EMAIL_ADDRESS, email, msg.as_string())
+
+        print(f"Email sent to: {email}")
+        return True
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+        return False

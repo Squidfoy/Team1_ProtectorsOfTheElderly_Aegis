@@ -26,6 +26,29 @@ def calculate_angle(p1, p2):
     angle = abs(np.degrees(np.arctan2(dy, dx)))
     return angle
 
+def detect_fall_from_frame(frame):
+    """
+    Runs YOLO pose + fall logic on ONE frame
+    Returns True/False
+    """
+    results = model(frame, verbose=False)[0]
+
+    if results.keypoints is None:
+        return False
+
+    frame_height = frame.shape[0]
+
+    for i, person_keypoints in enumerate(results.keypoints.data):
+        bbox = None
+        if results.boxes is not None and i < len(results.boxes.data):
+            box = results.boxes.data[i]
+            bbox = (int(box[0]), int(box[1]), int(box[2]), int(box[3]))
+
+        if is_fall(person_keypoints, frame_height, bbox=bbox):
+            return True
+
+    return False
+
 def is_fall(keypoints, frame_height, prev_hip_y=None,  bbox=None, prev_bbox=None):
     """
     Fall detection logic using shoulder and hip keypoints.

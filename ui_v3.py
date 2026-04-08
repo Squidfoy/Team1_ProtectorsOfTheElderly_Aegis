@@ -1,6 +1,6 @@
 # Just for testing
-# Last edited by: Julia
-# Last updated date: Mon Apr 6 2026
+# Last edited by: Alianna
+# Last updated date: Wed April 8 2026
 import tkinter as tk # UI framework
 from tkinter import messagebox # To make popup message box
 import threading # So UI doesn't freeze whie admin.py runs in background
@@ -216,7 +216,7 @@ class AdminUI:
                  font=("Arial", 36)).pack(pady=40)
 
         tk.Button(frame,
-                  text="Fall Detection While Recording",
+                  text="Run Fall Detection",
                   font=("Arial", 20),
                   bg="purple",
                   fg="white",
@@ -226,7 +226,7 @@ class AdminUI:
                   ).pack(pady=20)
 
         tk.Button(frame,
-                  text="Fall Detection Showing Camera Feed",
+                  text="Test Pose Detection with Camera",
                   font=("Arial", 20),
                   bg="green",
                   fg="white",

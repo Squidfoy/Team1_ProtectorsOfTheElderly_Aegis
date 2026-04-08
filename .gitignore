@@ -3,3 +3,6 @@ __pycache__/
 raw_recordings/
 archived_falls/
 event_log.txt
+.env
+admin_log.txt
+video_list.txt

@@ -48,7 +48,7 @@ When a fall is confirmed across multiple consecutive frames, a notification is s
 - MicroSD card and reader
 - Power cables for Raspberry Pi (USBC)
 - MicroHDMI to HDMI for setup
-- Monitor o
+- Monitor and keyboard for Raspberry Pi setup
 
 ### Software
 - Python 3.10 or 3.11
@@ -57,11 +57,13 @@ When a fall is confirmed across multiple consecutive frames, a notification is s
 Ultralytics
 Opencv-python
 Numpy
+Pillow
 Tkinter
+Dotenv
 ```
 Install them with:
 ```bash
-pip install ultralytics opencv-python numpy
+pip install ultralytics opencv-python numpy pillow python-dotenv
 ```
 
 ---
@@ -70,13 +72,13 @@ pip install ultralytics opencv-python numpy
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/your-username/aegis.git
-cd aegis
+git clone https://github.com/Squidfoy/Team1_ProtectorsOfTheElderly_Aegis.git
+cd Team1_ProtectorsOfTheElderly_Aegis
 ```
 
 2. Install dependencies:
 ```bash
-pip install ultralytics opencv-python numpy
+pip install ultralytics opencv-python numpy pillow python-dotenv
 ```
 Installing FFmpeg onto Raspberry Pi or Linux:
 ```bash
@@ -154,8 +156,8 @@ Aegis was developed by students at the **University of Missouri** as part of the
 
 | Name | Role |
 |------|------|
-| Alianna Card | AI model implementation and optimization |
-| Julia Albay | Baseline system architecture |
+| Alianna Card | AI model implementation and optimization, live video capture implementation, email notification implementation |
+| Julia Albay | Baseline system architecture, UI development and design |
 | Sania Akter Sohana | Backend video organization |
 | Pranaya Bollu | |
 
