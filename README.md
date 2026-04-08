@@ -6,6 +6,7 @@ Aegis the AI Based Fall Detection System is a privacy focused, camera based fall
 - [How It Works](#how-it-works)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Environment Setup](#environment-setup)
 - [Usage](#usage)
 - [Camera Placement Guidelines](#camera-placement-guidelines)
 - [Known Limitations](#known-limitations)
@@ -65,6 +66,11 @@ Install them with:
 ```bash
 pip install ultralytics opencv-python numpy pillow python-dotenv
 ```
+ 
+Or install from the requirements file:
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
@@ -78,21 +84,41 @@ cd Team1_ProtectorsOfTheElderly_Aegis
 
 2. Install dependencies:
 ```bash
-pip install ultralytics opencv-python numpy pillow python-dotenv
+pip install -r requirements.txt
 ```
-Installing FFmpeg onto Raspberry Pi or Linux:
-```bash
-sudo apt update
-sudo upgrade -y
-sudo apt install ffmpeg -y
-ffmpeg -version
-```
-When you see ffmpeg version info you're done.
-To install it on Windows follow this [Youtube Video Link](https://youtu.be/SG1Fc5QB8RE)
-
 3. On first run, the YOLO11 model will download automatically.
+ 
+4. Set up your `.env` file — see [Environment Setup](#environment-setup) below.
 
-4. Set up your caretaker notification email in the configuration file (instructions coming in a future update).
+---
+ 
+## Environment Setup
+ 
+Aegis uses a `.env` file to store email credentials for notifications. This file is not included in the repository for security reasons. A `.env.example` file is provided as a template.
+ 
+1. Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+On Windows:
+```
+copy .env.example .env
+```
+ 
+2. Open `.env` and fill in your credentials:
+```
+EMAIL_ADDRESS=your_aegis_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+```
+ 
+3. To get a Gmail App Password:
+   - Go to [myaccount.google.com](https://myaccount.google.com) → Security
+   - Enable **2-Step Verification** if not already on
+   - Search for **App Passwords** and create a new one named "Aegis"
+   - Copy the 16-character password into your `.env` file
+ 
+> **Important:** Never commit your `.env` file to GitHub. It is already listed in `.gitignore`.
+
 
 ---
 
