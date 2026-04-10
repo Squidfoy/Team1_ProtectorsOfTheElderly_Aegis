@@ -1,8 +1,5 @@
 # Last edited by: Alianna
 # Last updated date: Tue April 7 2026
-import subprocess
-import platform
-import re
 import os
 import time
 from datetime import datetime
@@ -10,6 +7,7 @@ import cv2
 import threading
 from collections import deque
 from ai_fall_detection import detect_fall_from_frame
+from notification import send_notif
 
 # Settings
 FRAME_BUFFER_SIZE = 150   # ~5 seconds @ 30 FPS
@@ -28,6 +26,8 @@ lock = threading.Lock()
 fall_event = threading.Event()
 
 last_event_time = 0
+
+caretaker_email = None  # will be set by UI
 
 def reset_state():
     frame_buffer.clear()
@@ -76,6 +76,14 @@ def inference_loop():
                 print("FALL DETECTED")
                 fall_event.set()
                 last_event_time = time.time()
+
+                # Send notification immediately when fall is detected
+                if caretaker_email:
+                    try:
+                        send_notif(caretaker_email, f"fall_{int(last_event_time)}.avi")
+                        print(f"Notification sent to {caretaker_email}")
+                    except Exception as e:
+                        print(f"Notification failed: {e}")
 
 
 # Save Video Thread

@@ -7,6 +7,8 @@ import ai_fall_detection # Process the videos for fall
 from notification import send_notif # To send notification
 import atexit # To clean up videos automatically
 import organization # organize videos
+import threading
+import recording_live as recorder 
 
 # The log names for the termial and video activity to be used in UI
 LOG_FILE = "admin_log.txt"
@@ -55,12 +57,19 @@ def run_admin(email):
     atexit.register(organization.cleanup_old_files, [folder_path, archived_dir])
 
     # Start recording
-    log("Starting recording_live.py ...")
-    try:
-        subprocess.run(["python", "recording_live.py"], check=True)
-        log("Recording finished.")
-    except subprocess.CalledProcessError as e:
-        log(f"Error running recording_live.py: {e}")
+    log("Starting recording...")
+    recorder.caretaker_email = email
+    recorder.reset_state()
+
+    threads = [
+        threading.Thread(target=recorder.capture_frames, daemon=True),
+        threading.Thread(target=recorder.inference_loop, daemon=True),
+        threading.Thread(target=recorder.save_event_video, daemon=True),
+    ]
+    for t in threads:
+        t.start()
+
+    log("Recording started.")
 
     # Update list after recording
     update_video_list_file(folder_path)
