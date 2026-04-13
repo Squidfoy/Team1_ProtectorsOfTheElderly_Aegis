@@ -10,8 +10,6 @@ from ultralytics import YOLO
 # Load the YOLOv11 pose model (downloads automatically first time)
 model = YOLO("yolo11n-pose.pt")
 
-# Open your webcam (0 = default camera)
-cap = cv2.VideoCapture(0)
 
 def get_keypoint(keypoints, index):
     # Get a keypoint's (x, y) coordinates.
@@ -90,55 +88,60 @@ def is_fall(keypoints, frame_height, prev_hip_y=None,  bbox=None, prev_bbox=None
     except Exception:
         return False
 
-frame_height = None
-fall_frame_count = 0
-FALL_FRAMES_THRESHOLD = 5  # Fall must persist for 5 frames to avoid false positives
-prev_hip_y = None
+# Only runs if you launch pose_test.py directly, not when imported
+if __name__ == "__main__":
+    # Open your webcam (0 = default camera)
+    cap = cv2.VideoCapture(0)
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+    frame_height = None
+    fall_frame_count = 0
+    FALL_FRAMES_THRESHOLD = 5  # Fall must persist for 5 frames to avoid false positives
+    prev_hip_y = None
 
-    frame_height = frame.shape[0]
-    results = model(frame, verbose=False)
-    annotated_frame = results[0].plot()
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    fall_detected = False
+        frame_height = frame.shape[0]
+        results = model(frame, verbose=False)
+        annotated_frame = results[0].plot()
 
-    # Loop through each detected person
-    for result in results:
-        if result.keypoints is not None:
-            for person_keypoints in result.keypoints.data:
-                if is_fall(person_keypoints, frame_height):
-                    fall_detected = True
-                # Update prev_hip_y AFTER checking for fall
-                try:
-                    left_hip = get_keypoint(person_keypoints, 11)
-                    right_hip = get_keypoint(person_keypoints, 12)
-                    prev_hip_y = (left_hip[1] + right_hip[1]) // 2
-                except Exception:
-                    pass
+        fall_detected = False
 
-    # Require the fall to persist across multiple frames
-    if fall_detected:
-        fall_frame_count += 1
-    else:
-        fall_frame_count = 0
+        # Loop through each detected person
+        for result in results:
+            if result.keypoints is not None:
+                for person_keypoints in result.keypoints.data:
+                    if is_fall(person_keypoints, frame_height):
+                        fall_detected = True
+                    # Update prev_hip_y AFTER checking for fall
+                    try:
+                        left_hip = get_keypoint(person_keypoints, 11)
+                        right_hip = get_keypoint(person_keypoints, 12)
+                        prev_hip_y = (left_hip[1] + right_hip[1]) // 2
+                    except Exception:
+                        pass
 
-    # If a fall is detected, show an alert
-    if fall_frame_count >= FALL_FRAMES_THRESHOLD:
-        cv2.putText(annotated_frame, "FALL DETECTED!", (50, 50),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
+        # Require the fall to persist across multiple frames
+        if fall_detected:
+            fall_frame_count += 1
+        else:
+            fall_frame_count = 0
 
-    cv2.imshow("Aegis - Fall Detection", annotated_frame)
+        # If a fall is detected, show an alert
+        if fall_frame_count >= FALL_FRAMES_THRESHOLD:
+            cv2.putText(annotated_frame, "FALL DETECTED!", (50, 50),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
 
-    # Press 'q' to quit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        cv2.imshow("Aegis - Fall Detection", annotated_frame)
 
-cap.release()
-cv2.destroyAllWindows()
+        # Press 'q' to quit
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
 
 
     

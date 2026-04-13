@@ -12,3 +12,5 @@ To get the most accurate fall detection, please follow these Camera Placement Gu
         Reflections can distorte the camera's view and affect detection quality.
 6. Ensure adequate lighting. 
         The system works best in well-lit environments. Avoid placing the camera where it will be looking directly into a bright light source.
+
+Once youcan see that the camera has started recording, you can disconnect the set-up monitor as the system is now running.

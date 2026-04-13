@@ -1,13 +1,14 @@
 # Controls system
-# Last edited by: Julia
+# Last edited by: Alianna
 # Last edit date: Mon Apr 13 2026
-import subprocess
 import os
 import ai_fall_detection
 from notification import send_notif
 import atexit
 import organization
 import time
+import threading
+import recording_live as recorder_module
 
 # Get newest email input
 def get_email():
@@ -28,7 +29,16 @@ def run_admin(email=None, stop_flag=None):
     recorder_path = os.path.join(script_dir, "recording_live.py")
 
     # Start recording system
-    recorder = subprocess.Popen(["python", recorder_path])
+    recorder_module.reset_state()
+    recorder_module.caretaker_email = email
+
+    threads = [
+        threading.Thread(target=recorder_module.capture_frames, daemon=True),
+        threading.Thread(target=recorder_module.inference_loop, daemon=True),
+        threading.Thread(target=recorder_module.save_event_video, daemon=True),
+    ]
+    for t in threads:
+        t.start()
 
     folder_path = os.path.join(script_dir, "raw_recordings")
 
@@ -79,14 +89,6 @@ def run_admin(email=None, stop_flag=None):
     finally:
         # Clean up
         print("[ADMIN] Cleaning up...")
-
-        try:
-            recorder.terminate()
-            recorder.wait(timeout=2)
-        except Exception:
-            try:
-                recorder.kill()
-            except Exception:
-                pass
-
+        recorder_module.stop_flag.set()
+        recorder_module.fall_event.set()  # unblock save thread
         print("[ADMIN] Fully stopped")
