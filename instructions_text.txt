@@ -1,11 +1,14 @@
-Camera Placement Guidelines
+To get the most accurate fall detection, please follow these Camera Placement Guidelines:
 
-Proper camera placement is critical for accurate fall detection. Please follow these guidelines:
-
--Mount the camera at a 45-degree angle: from a wall or corner, roughly 6–8 feet off the ground. This gives the best view of the full body.
--Do not mount the camera on the ceiling. A top-down view makes everyone appear horizontal and will cause constant false positives.
--Do not mount the camera directly facing where the person will walk toward it. Falls toward the camera are harder to detect than side-on falls.
--Ensure the camera has a clear, unobstructed view of the monitored area. Objects blocking the frame will reduce detection accuracy.
--Avoid placing the camera behind glass: reflections and distortion affect detection quality.
--Ensure adequate lighting. The system works best in well-lit environments. Avoid placing the camera where it will be looking directly into a bright light source.
--Test the camera feed before relying on the system by clicking `Test Pose Detection with Camera` on the next screen.
+1. Mount the camera at a 45-degree angle:
+        From a wall or corner, roughly 6-8 feet off the ground. This gives the best view of the full body.
+2. Do not mount the camera on the ceiling. 
+        A top-down view makes everyone appear horizontal and will cause constant false positives.
+3. Do not mount the camera directly facing where the person will walk toward it. 
+        Falls toward the camera are harder to detect than side-on falls.
+4. Ensure the camera has a clear, unobstructed view of the monitored area. 
+        Objects blocking the frame will reduce detection accuracy.
+5. Avoid placing the camera behind glass:
+        Reflections can distorte the camera's view and affect detection quality.
+6. Ensure adequate lighting. 
+        The system works best in well-lit environments. Avoid placing the camera where it will be looking directly into a bright light source.
