@@ -59,12 +59,12 @@ Ultralytics
 Opencv-python
 Numpy
 Pillow
-Tkinter
+pyside6
 Dotenv
 ```
 Install them with:
 ```bash
-pip install ultralytics opencv-python numpy pillow python-dotenv
+pip install ultralytics opencv-python numpy pillow pyside6 python-dotenv
 ```
  
 Or install from the requirements file:
