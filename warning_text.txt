@@ -1,12 +1,13 @@
-Known Limitations
+Aegis is designed for practical home use but has several known limitations that users and caretakers must be aware of:
 
-Aegis is designed for practical home use but has several known limitations that users and caretakers should be aware of:
+1. The accuracy is lower for falls toward the camera direction and falls where the person's back is fully facing away from the camera. 
+2. Ceiling-mounted camera views from the top-down perspective are not supported in Aegis.
+3. The falls may not be detected if the person's body is partially blocked by furniture or other objects.
+4. Slow movements to the floor may occasionally trigger a false positive (Someone lying down or kneeling down to look under furniture).
+5. Aegis is optimized for monitoring one person at a time. Accuracy may decrease in scenes with multiple people.
+6. Dark environments, flickering lights, may reduce detection accuracy.
+7. Unusual camera angles may affect accuracy. Standard wall or corner-mounted cameras are greatly recommended. 
 
-- Falls toward the camera are harder to detect than side-on falls. The system uses bounding box analysis to partially address this, but accuracy is lower for this fall direction. Avoid placing the camera in a position where a person would fall directly toward it.
-- Ceiling-mounted cameras are not supported. The top-down perspective breaks the pose-based detection logic entirely.
-- Occlusion if the person's body is partially blocked by furniture or other objects, keypoint detection may fail and falls could be missed.
-- Slow, deliberate movements to the floor (such as someone intentionally lying down or getting on the floor to look under furniture) may occasionally trigger a false positive. The system uses posture history to reduce this, but edge cases remain.
-- Single-person monitoring: the system is optimized for monitoring one person at a time. Accuracy may decrease in scenes with multiple people.
-- Lighting sensitivity: very dark environments or scenes with dramatic lighting changes (e.g. flickering lights) may reduce detection accuracy.
-- Camera angle sensitivity: the system is optimized for standard wall or corner-mounted cameras. Unusual angles may affect accuracy.
-- Falls where the person's back is fully facing the camera may result in missed detections due to keypoint occlusion.
+This application is not intended to replace professional monitoring, it's recommended to use other fall detection devices with it. 
+The developers are not responsible for any injuries, accidents, or damages that may occur while using this software.
+By using this application, you agree that you do so at your own risk.
