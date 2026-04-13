@@ -61,10 +61,11 @@ Numpy
 Pillow
 pyside6
 Dotenv
+psutil
 ```
 Install them with:
 ```bash
-pip install ultralytics opencv-python numpy pillow pyside6 python-dotenv
+pip install ultralytics opencv-python numpy pillow pyside6 python-dotenv psutil
 ```
  
 Or install from the requirements file:
