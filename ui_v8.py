@@ -4,6 +4,7 @@
 import sys
 import os
 import cv2
+import platform
 import multiprocessing # To stop admin from running
 import psutil
 import admin_v8 as admin # admin_v8.py
@@ -603,7 +604,11 @@ class AegisApp(QMainWindow):
         QTimer.singleShot(500, self._init_camera)
 
     def _init_camera(self):
-        self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        import platform
+        if platform.system() == "Windows":
+            self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        else:
+            self.cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
 
         if not self.cap.isOpened():
             self.status_box.setText("Camera is busy, try again after 5 seconds")
