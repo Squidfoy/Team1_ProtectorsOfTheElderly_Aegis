@@ -604,7 +604,6 @@ class AegisApp(QMainWindow):
         QTimer.singleShot(500, self._init_camera)
 
     def _init_camera(self):
-        import platform
         if platform.system() == "Windows":
             self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         else:
