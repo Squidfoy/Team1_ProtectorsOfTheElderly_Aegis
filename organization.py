@@ -43,5 +43,5 @@ def cleanup_old_files(folder_list):
                     if file_age > one_day_in_seconds:
                         os.remove(file_path)
                         log_event(video, "DELETED (EXPIRED > 24H)")
-                        print(f"Cleaned up expired file: {video}")
+                        print(f"[ORGANIZATION]Cleaned up expired file: {video}")
                         
