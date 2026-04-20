@@ -119,8 +119,8 @@ def is_fall(keypoints, frame_height, prev_hip_y=None,  bbox=None, prev_bbox=None
 def fall_check(folder_dir, video_file_name):
     # Get the video location info
     file_path = os.path.join(folder_dir, video_file_name)
-    print("At: ", file_path)
-    print("Checking for fall in video: ", video_file_name)
+    print("[AI]At: ", file_path)
+    print("[AI]Checking for fall in video: ", video_file_name)
 
 
     # Alianna you can out the ai model code here**************************************
