@@ -1,5 +1,5 @@
-# Last edited by: Alianna
-# Last updated date: Tue April 7 2026
+# Last edited by: Julia
+# Last updated date: Mon April 20 2026
 import os
 import time
 from datetime import datetime
@@ -73,7 +73,7 @@ def inference_loop():
 
         if sum(detection_buffer) >= DETECTION_THRESHOLD:
             if time.time() - last_event_time > COOLDOWN:
-                print("FALL DETECTED")
+                print("[Recording]FALL DETECTED")
                 fall_event.set()
                 last_event_time = time.time()
 
@@ -82,8 +82,31 @@ def inference_loop():
                     try:
                         send_notif(caretaker_email, f"fall_{int(last_event_time)}.avi")
                         print(f"Notification sent to {caretaker_email}")
+
+                        # Alert txt message for UI main screen
+                        alert_path = "alert.txt"
+                        alerttime = datetime.now().strftime("%H:%M")
+                        alertdate = datetime.now().strftime("%D")
+
+                        # clear file first
+                        with open(alert_path, "w") as f:
+                            f.write(
+                                f"Fall Detected at {alerttime} on {alertdate}!\n"
+                                f"Alert sent to {caretaker_email}"
+                        )
                     except Exception as e:
                         print(f"Notification failed: {e}")
+
+                        # Alert txt message for UI main screen
+                        alert_path = "alert.txt"
+                        alerttime = datetime.now().strftime("%H:%M")
+                        alertdate = datetime.now().strftime("%D")
+
+                        # clear file first
+                        with open(alert_path, "w") as f:
+                            f.write(
+                                f"Fall Detected at {alerttime} on {alertdate}!\n"
+                        )
 
 
 # Save Video Thread
@@ -122,7 +145,9 @@ def write_video(frames):
     save_dir = "archived_falls"
     os.makedirs(save_dir, exist_ok=True)
 
-    filename = os.path.join(save_dir, f"fall_{int(time.time())}.avi")
+    # video naming format hour-min month-day-year
+    timestamp = datetime.now().strftime("%H-%M__%m-%d-%Y")
+    filename = os.path.join(save_dir, f"{timestamp}.avi")
 
     out = cv2.VideoWriter(
         filename,
