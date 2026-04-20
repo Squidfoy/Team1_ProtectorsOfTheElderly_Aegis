@@ -39,7 +39,7 @@ def build_message(camera_name, video_file_name):
 def send_notif(email, video_file_name, camera_name="webcam"):
     """Send fall alert via Gmail."""
     if not validate_email(email):
-        print(f"Invalid email format: {email}")
+        print(f"[NOTIFICATIONS]Invalid email format: {email}")
         return False
 
     message = build_message(camera_name, video_file_name)
@@ -55,8 +55,8 @@ def send_notif(email, video_file_name, camera_name="webcam"):
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             server.sendmail(EMAIL_ADDRESS, email, msg.as_string())
 
-        print(f"Email sent to: {email}")
+        print(f"[NOTIFICATIONS]Email sent to: {email}")
         return True
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        print(f"[NOTIFICATIONS]Failed to send email: {e}")
         return False
