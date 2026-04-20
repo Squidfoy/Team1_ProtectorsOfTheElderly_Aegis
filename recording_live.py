@@ -73,7 +73,7 @@ def inference_loop():
 
         if sum(detection_buffer) >= DETECTION_THRESHOLD:
             if time.time() - last_event_time > COOLDOWN:
-                print("[Recording]FALL DETECTED")
+                print("[RECORDING]FALL DETECTED")
                 fall_event.set()
                 last_event_time = time.time()
 
@@ -81,7 +81,7 @@ def inference_loop():
                 if caretaker_email:
                     try:
                         send_notif(caretaker_email, f"fall_{int(last_event_time)}.avi")
-                        print(f"Notification sent to {caretaker_email}")
+                        print(f"[RECORDING]Notification sent to {caretaker_email}")
 
                         # Alert txt message for UI main screen
                         alert_path = "alert.txt"
@@ -95,7 +95,7 @@ def inference_loop():
                                 f"Alert sent to {caretaker_email}"
                         )
                     except Exception as e:
-                        print(f"Notification failed: {e}")
+                        print(f"[RECORDING]Notification failed: {e}")
 
                         # Alert txt message for UI main screen
                         alert_path = "alert.txt"
@@ -117,7 +117,7 @@ def save_event_video():
         if not fall_event.is_set():
             continue  # timed out, loop back and check stop_flag
 
-        print("Saving fall clip...")
+        print("[RECORDING]Saving fall clip...")
 
         with lock:
             pre_frames = list(frame_buffer)
@@ -160,7 +160,7 @@ def write_video(frames):
         out.write(frame)
 
     out.release()
-    print(f"Saved: {filename}")
+    print(f"[RECORDING]Saved: {filename}")
 
 
 # Main
