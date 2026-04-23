@@ -29,7 +29,9 @@ def manage_video(file_path, video_name, is_fall):
 
 # CLEANUP: REMOVE FILES OLDER THAN 24 HOURS
 def cleanup_old_files(folder_list):
-    one_day_in_seconds = 86400
+    # For testing: 5 minutes = 300 seconds
+    # For production: 24 hours = 86400 seconds
+    expiry_limit = 300
     current_time = time.time()
     
     for folder in folder_list:
@@ -40,7 +42,7 @@ def cleanup_old_files(folder_list):
                     # Get file age
                     file_age = current_time - os.path.getmtime(file_path)
                     
-                    if file_age > one_day_in_seconds:
+                    if file_age > expiry_limit:
                         os.remove(file_path)
                         log_event(video, "DELETED (EXPIRED > 24H)")
                         print(f"[ORGANIZATION]Cleaned up expired file: {video}")
