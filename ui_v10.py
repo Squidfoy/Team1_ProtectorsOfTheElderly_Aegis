@@ -8,7 +8,6 @@ import platform
 import multiprocessing # To stop admin from running
 import psutil
 import admin_v8 as admin # admin_v8.py
-import pose_test
 # Using PySide6 for better looking UI and show camera feed
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -608,13 +607,9 @@ class AegisApp(QMainWindow):
 
         frame = cv2.flip(frame, 1)
 
-        # Run YOLO pose detection and draw skeleton overlay
-        results = pose_test.model(frame, verbose=False)
-        annotated_frame = results[0].plot()
-
-        rgb = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
+        frame = cv2.flip(frame, 1)
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         h, w, ch = rgb.shape
-
         img = QImage(rgb.data, w, h, ch * w, QImage.Format_RGB888)
         self.video.setPixmap(QPixmap.fromImage(img))
 
