@@ -181,12 +181,12 @@ Aegis is designed with user privacy as a core principle:
 
 Aegis was developed by students at the **University of Missouri** as part of the INFOTC-4970W Senior Capstone Design course.
 
-| Name | Role |
+| Name | Roles |
 |------|------|
-| Alianna Card | AI model implementation and optimization, live video capture implementation, email notification implementation |
-| Julia Albay | Baseline system architecture, UI development and design |
-| Sania Akter Sohana | Backend video organization |
-| Pranaya Bollu | |
+| Alianna Card | + AI model implementation and optimization <br> + Live video capture implementation <br> + Email notification development <br> + System deployment on Raspberry Pi <br> + Testing and Debugging |
+| Julia Albay | + System architecture <br> + UI development and design <br> + Video file naming and formatting <br> + User Guide <br> + Testing and Debugging |
+| Sania Akter Sohana | + Backend video file deletion and storage management |
+| Pranaya Bollu | None |
 
 **Mentor:** Michael Tompkins
 
